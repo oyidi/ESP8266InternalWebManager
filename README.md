@@ -1,5 +1,24 @@
 # ESP8266InternalWebManager
-ESP8266 Manager with Arduino IDE
+ESP8266 Internal Manager with Arduino IDE
+
+ESP8266 Internal Manager, this project can easy to manage your ESP82668 function like : wifi connect, check pin statue, control pin output.
+
+##### need libary:
+
+ Arduino IDE v1.8.2 https://www.arduino.cc/en/main/software
+ 
+ ESP8266 core for Arduino v2.3.0 https://github.com/esp8266/Arduino
+ 
+ ArduinoJson v5.8.2 https://github.com/bblanchon/ArduinoJson
+ 
+##### How to use:
+ 
+ 1.Brunning Progremma to Flash, use Flash Size 4M(1M SPIFFS), then use 'ESP8266 Data Sketch Data Upload' upload project's data folder to ESP8266's SPIFFS.
+ 
+ 2.Reboot ESP8266, use wifi device connect to ESP8266, default ssid 'ESP8266_XXXXXX', password 'adminadmin'. In Browser access the url '192.168.128.1', go to 'wifi manager' input witch wifi you will connect. final the ESP8266 will auto connect to the wifi.
+ 
+ 3.When device connect to the ESP8266, you can use the web page to manage ESP8266's pin.
+ 
 
 ESP8266的内置管理器，可以对wifi接入点和引脚的输出输入进行管理和查询。
 
