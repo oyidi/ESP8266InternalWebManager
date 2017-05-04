@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP8266 WifiManager</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html">ESP8266 WifiManager</a>
+        </div>
+      </div>
+    </nav>
+    
+	<div class="container">
+    	<ul class="nav nav-tabs">
+          <li role="presentation"><a href="./index.html">主页</a></li>
+          <li role="presentation" class="active"><a href="#">Wifi接入</a></li>
+          <li role="presentation"><a href="./pin.html">GPIO管理</a></li>
+        </ul>
+    	<div class="starter-template">
+        <h1>ESP8266 Wifi接入管理</h1>
+        
+        <br>
+        <div class=" col-sm-offset-3 col-sm-6">
+            <form>
+                <div class="form-group">
+                	<p class="lead">修改接入Wifi参数</p>
+                    <label>SSID名称</label>
+                    <input id="wlan_ssid" class="ssid form-control" type="text" name="ssid"/>
+                    <label>密码</label>
+                    <input id="wlan_password" class="passwd form-control" type="password" name="passwd"/>
+                </div>
+                <button class="btn btn-default" onClick="send()">确定</button>
+            </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	
+	
+	<script type="text/javascript">
+	get_wlan();
+	function send() {
+		var ssid = document.getElementsByClassName("ssid").item(0).value;
+		var passwd = document.getElementsByClassName("passwd").item(0).value;
+		
+		var xh = new XMLHttpRequest();
+		xh.onreadystatechange = function(){
+			if (xh.readyState == 4){
+			  if(xh.status == 200) {
+				  var result = xh.responseText;
+				alert(xh.responseText);
+			  }
+			}
+		};
+		xh.open("POST", "./wifi_access?a=set_wlan&ssid="+ssid + "&passwd=" + passwd, true);
+		xh.send(null);
+	}
+	function get_wlan() {
+		var xh = new XMLHttpRequest();
+		xh.onreadystatechange = function(){
+			if (xh.readyState == 4){
+				if(xh.status == 200) {
+					var result = xh.responseText;
+					var json = JSON.parse(result);
+					document.getElementById("wlan_ssid").value = json.SSID;
+					document.getElementById("wlan_password").value = json.Passwd;
+				}
+			}
+		};
+		xh.open("POST", "./wifi_access?a=get_wlan", true);
+		xh.send(null);
+	}
+	</script>
+  </body>
+</html>

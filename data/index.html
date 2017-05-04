@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP8266 WifiManager</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">ESP8266 WifiManager</a>
+        </div>
+      </div>
+    </nav>
+    
+	<div class="container">
+        <ul class="nav nav-tabs">
+          <li role="presentation" class="active"><a href="#">主页</a></li>
+          <li role="presentation"><a href="./wlan_connect.html">Wifi接入</a></li>
+          <li role="presentation"><a href="./pin.html">GPIO管理</a></li>
+        </ul>
+        
+    	<div class="starter-template">
+            <h1>ESP8266 Control Center</h1>
+            <p class="lead">ESP8266的WEB控制台</p>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	
+	
+	<script type="text/javascript">
+	function getPin(pinId) {
+		var xh = new XMLHttpRequest();
+		xh.onreadystatechange = function(){
+			if (xh.readyState == 4){
+			  if(xh.status == 200) {
+				//alert(xh.responseText);
+				var temp = xh.responseText;
+				document.getElementsByClassName("pin").item(0).innerHTML = temp;
+			  }
+			}
+		};
+		xh.open("GET", "/io?pin="+pinId, true);
+		xh.send(null);
+	}
+	</script>
+  </body>
+</html>

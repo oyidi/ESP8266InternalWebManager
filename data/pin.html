@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP8266 WifiManager</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>.pwm-input{ width:5em;}</style>
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html">ESP8266 WifiManager</a>
+        </div>
+      </div>
+    </nav>
+    
+	<div class="container">
+    	<ul class="nav nav-tabs">
+          <li role="presentation"><a href="./index.html">主页</a></li>
+          <li role="presentation"><a href="./wlan_connect.html">Wifi接入</a></li>
+          <li role="presentation" class="active"><a href="#">GPIO管理</a></li>
+        </ul>
+    	<div class="starter-template">
+        <h1>GPIO管理</h1>
+        <table class="table" id="pin-list">
+            <thead>
+                <tr >
+                    <th>引脚</th>
+                    <th>数值</th>
+                    <th>数字操作</th>
+                    <th>PWM操作</th>
+                </tr>
+            </thead>
+        </table>
+        <p id="loading">正在加载</p>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		//var data = '{"pin_map":[{"pin_name":"D0","pin_id":16,"digital":0,"analog":0},{"pin_name":"D1","pin_id":5,"digital":1,"analog":1023},{"pin_name":"D2","pin_id":4,"digital":1,"analog":1023},{"pin_name":"D3","pin_id":0,"digital":1,"analog":1023},{"pin_name":"D4","pin_id":2,"digital":0,"analog":0},{"pin_name":"D5","pin_id":14,"digital":0,"analog":0},{"pin_name":"D6","pin_id":12,"digital":0,"analog":0},{"pin_name":"D7","pin_id":13,"digital":0,"analog":0},{"pin_name":"D8","pin_id":15,"digital":0,"analog":0}]}';
+		var json;
+		var xh = new XMLHttpRequest();
+		xh.onreadystatechange = function(){
+			if (xh.readyState == 4){
+				if(xh.status == 200) {
+				    json = JSON.parse(xh.responseText);
+					//var json = JSON.parse(data);
+					for(var i = 0;i < json.pin_map.length;i++) {
+						var tab = document.getElementById("pin-list");
+						var rowobj=tab.insertRow(tab.rows.length);
+						var cell1=rowobj.insertCell(rowobj.cells.length);
+						var cell2=rowobj.insertCell(rowobj.cells.length);
+						var cell3=rowobj.insertCell(rowobj.cells.length);
+						var cell4=rowobj.insertCell(rowobj.cells.length);
+						cell1.innerHTML=json.pin_map[i].pin_name;
+						cell2.innerHTML="D:"+json.pin_map[i].digital+ " A:" + json.pin_map[i].analog;
+						cell3.innerHTML=getSelectHtml(i, json.pin_map[i].digital);
+						cell4.innerHTML=getPWMInputHtml(i,json.pin_map[i].analog);
+					}
+					document.getElementById("loading").hidden = true;
+				} else {
+					document.getElementById("loading").innerHTML = "加载失败"
+				}
+			}
+		}
+		xh.open("GET", "/io?mode=get_pinmap", true);
+		xh.send(null);
+		
+		function onPWMKeyDown(e, id, value) {
+			if(e.keyCode==13) {
+				if(!isNaN(value)) {
+					//alert("id:"+id+" value:"+value);
+					setPinValue(id, value, false);
+				} else {
+					alert("非法值");
+				}
+			}
+		}
+		function setPinValue(pin_index, value, isDigital) {
+			var xh = new XMLHttpRequest();
+			xh.onreadystatechange = function() {
+				if (xh.readyState == 4){
+					if(xh.status == 200) {
+						//alert(xh.responseText);
+						alert("操作成功");
+					}
+				}
+			}
+			var requestString = "/io?mode=set_pin&pin=" + json.pin_map[pin_index].pin_id + "&pin_mode=" + (isDigital==true?"digital":"analog") + "&value=" + value;
+			xh.open("GET", requestString, true);
+			xh.send(null);
+		}
+		function getPWMInputHtml(id, value) {
+			var html = '<input type="text" id="' + id + '" class="form-control pwm-input" placeholder="' + value + '" onkeydown="onPWMKeyDown(event,this.id,this.value)" value="">';
+			return html
+		}
+		function getSelectHtml(id, value) {
+			var html = '<select id="' + id + '" class="digital-ipin" onchange="onSelectChange(' + id + ', this.value)"><option value="0"' + (value==0?'selected="selected"':'') + '>0</option><option value="1"' + (value==1?'selected="selected"':'') + '>1</option></select>';
+			return html;
+		}
+		function onSelectChange(id, value) {
+			//alert("id:"+id+" value:"+value);
+			setPinValue(id, value, true);
+		}
+	</script>
+  </body>
+</html>

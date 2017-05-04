@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My IOT Project</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  	<nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">ESP8266 Center</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">主页</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+	<div class="container">
+        <ul class="nav nav-tabs">
+           <li role="presentation"><a href="index.html">主页</a></li>
+           <li role="presentation"><a href="./wlan_connect.html">Wifi接入</a></li>
+           <li role="presentation" class="active"><a href="./devices.html">设备管理</a></li>
+           <li role="presentation"><a href="./pin.html">GPIO管理</a></li>
+        </ul>
+        
+    	<div class="starter-template">
+            <h1>设备管理</h1>
+            <table class="table" id="device-list">
+                <thead>
+                    <tr >
+                        <th>名称</th>
+                        <th>引脚</th>
+                        <th>数值</th>
+                    </tr>
+                </thead>
+            </table>
+	    </div>
+    </div>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	
+	
+	<script type="text/javascript">
+	
+	function onPageLoad() {
+		//var dat_str = '{"sensor_data":[{"sensor":"DHT11","temp":28.00,"hum":44.00},{"sensor":"BH1750","lux":191}]}';
+		var xh = new XMLHttpRequest();
+		xh.onreadystatechange = function(){
+			if (xh.readyState == 4){
+			  if(xh.status == 200) {
+				//alert(xh.responseText);
+				var json = JSON.parse(xh.responseText);
+				//var tab = document.getElementById("device-list"); 
+				for(var i = 0;i < json.sensor_data.length;i++) {
+					var tab = document.getElementById("device-list");
+					var rowobj=tab.insertRow(tab.rows.length);
+					var cell1=rowobj.insertCell(rowobj.cells.length);
+					var cell2=rowobj.insertCell(rowobj.cells.length);
+					var cell3=rowobj.insertCell(rowobj.cells.length);
+					//alert(json.sensor_data[i].sensor);
+					if(json.sensor_data[i].sensor == "DHT11") {
+						cell1.innerHTML=json.sensor_data[i].sensor;
+						cell2.innerHTML='3';
+						cell3.innerHTML="温度:" + json.sensor_data[i].temp + " 湿度:" +  json.sensor_data[i].hum;
+					} else if(json.sensor_data[i].sensor == "BH1750") {
+						cell1.innerHTML=json.sensor_data[i].sensor;
+						cell2.innerHTML='IIC';
+						cell3.innerHTML="亮度:" + json.sensor_data[i].lux + "Lux";
+					}
+				}
+			  }
+			}
+		};
+		xh.open("GET", "/sensor?sensor=all&action=get", true);
+		xh.send(null);
+	}
+	window.onload=onPageLoad;
+	</script>
+  </body>
+</html>
