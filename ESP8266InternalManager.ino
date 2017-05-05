@@ -18,13 +18,15 @@ bool needConenct = false;
 unsigned long apShutDownTime = 6000000L;
 
 unsigned long lastConnectTime = 0;
-unsigned long retryConnectTime = 60000;
+unsigned long retryConnectTime = 120000;
 
 
 void readTimerProfile();
 void updateNTP();
 void readSSIDJson();
 void setup() {
+  pinMode(2, OUTPUT);
+  digitalWrite(2, LOW);
   Serial.begin ( 115200 );
   Serial.println("");
   SPIFFS.begin();
@@ -33,7 +35,7 @@ void setup() {
   IPAddress softGateway(192,168,128,1);
   IPAddress softSubnet(255,255,255,0);
   WiFi.softAPConfig(softLocal, softGateway, softSubnet);
-  String apName = ("AntsNet_"+(String)ESP.getChipId());
+  String apName = ("ESP8266_"+(String)ESP.getChipId());
   const char *softAPName = apName.c_str();
   WiFi.softAP(softAPName, "adminadmin");
   IPAddress myIP = WiFi.softAPIP();
@@ -51,18 +53,21 @@ void setup() {
   Serial.println(ssid.c_str());
   Serial.print("passwd:");
   Serial.println(password.c_str());
-  WiFi.begin ( ssid.c_str(), password.c_str() );
-  while ( WiFi.status() != WL_CONNECTED ) {
-    delay ( 1000 );
-    Serial.print ( "." );
-    //showWifiStatue(WiFi.status());
-    //Serial.println(WiFi.status());
-    if(connectCount > 30) {
-      Serial.println( "Connect fail!" );
-      break;
+  if(ssid != "") {
+    WiFi.begin ( ssid.c_str(), password.c_str() );
+    while ( WiFi.status() != WL_CONNECTED ) {
+      delay ( 1000 );
+      Serial.print ( "." );
+      //showWifiStatue(WiFi.status());
+      //Serial.println(WiFi.status());
+      if(connectCount > 30) {
+        Serial.println( "Connect fail!" );
+        break;
+      }
+      connectCount += 1;
     }
-    connectCount += 1;
   }
+  
   lastConnectTime = millis();
   if(WiFi.status() == WL_CONNECTED) {
     Serial.println ( "" );
@@ -72,7 +77,6 @@ void setup() {
     Serial.println ( WiFi.localIP() );
     connectCount = 0;
   }
-  Serial.println ( "HTTP server started" );
   finderUdp.begin(8266);
 
   server.on ("/", handleEvent);
@@ -81,6 +85,7 @@ void setup() {
   server.onNotFound ( handleNotFound );
   server.begin();
   Serial.println("Start Success.");
+  digitalWrite(2, HIGH);
 }
 void loop() {
   // 更新内网查询udp

@@ -109,12 +109,12 @@ void handleNotFound() {
   String contentType = getContentType(path);
   String pathWithGz = path + ".gz";
   if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)){
-  if(SPIFFS.exists(pathWithGz))
-    path += ".gz";
-  File file = SPIFFS.open(path, "r");
-  size_t sent = server.streamFile(file, contentType);
-  file.close();
-  return;
+    if(SPIFFS.exists(pathWithGz))
+      path += ".gz";
+    File file = SPIFFS.open(path, "r");
+    size_t sent = server.streamFile(file, contentType);
+    file.close();
+    return;
   }
   String message = "File Not Found\n\n";
   message += "URI: ";
