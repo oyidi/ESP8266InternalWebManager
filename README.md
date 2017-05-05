@@ -3,7 +3,7 @@ ESP8266 Internal Manager with Arduino IDE
 
 ESP8266 Internal Manager, this project can easy to manage your ESP82668 function like : wifi connect, check pin statue, control pin output.
 
-##### need libary:
+#### need libary:
 
  Arduino IDE v1.8.2 https://www.arduino.cc/en/main/software
  
@@ -11,7 +11,7 @@ ESP8266 Internal Manager, this project can easy to manage your ESP82668 function
  
  ArduinoJson v5.8.2 https://github.com/bblanchon/ArduinoJson
  
-##### How to use:
+#### How to use:
  
  1.Brunning Progremma to Flash, use Flash Size 4M(1M SPIFFS), then use 'ESP8266 Data Sketch Data Upload' upload project's data folder to ESP8266's SPIFFS.
  
@@ -24,11 +24,11 @@ ESP8266的内置管理器，可以对wifi接入点和引脚的输出输入进行
 
 ##### 基本需求：
  
- Arduino版本1.8.2:https://www.arduino.cc/en/main/software
+ Arduino版本1.8.2 https://www.arduino.cc/en/main/software
  
- 使用的ESP8266 core for Arduino的版本为2.3.0：https://github.com/esp8266/Arduino
+ 使用的ESP8266 core for Arduino的版本为2.3.0 https://github.com/esp8266/Arduino
  
- 为需要引入ArduinoJson库:https://github.com/bblanchon/ArduinoJson
+ 为需要引入ArduinoJson库 https://github.com/bblanchon/ArduinoJson
 
 ##### 使用方法：
 
@@ -37,3 +37,5 @@ ESP8266的内置管理器，可以对wifi接入点和引脚的输出输入进行
  2、重启ESP8266之后使用wifi设备连接ESP8266，密码adminadmin，在浏览器中输入192.168.128.1进入管理界面，在wifi管理中输入需要连接的wifi热点名称及密码；
  
  3、连接上ESP8266之也可以对引脚的输入输出进行管理，支持analog以及digital输出。
+ 
+ 
